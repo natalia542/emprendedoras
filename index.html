@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#E5004E">
+<title>Emprendedoras Conectadas · Kodea</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- PWA: manifest embebido para poder "Agregar a pantalla de inicio" -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 86'%3E%3Crect width='90' height='86' fill='%23E5004E'/%3E%3Crect x='18' y='14' width='14' height='58' fill='white'/%3E%3Cpolygon points='40,14 78,43 40,72 40,58 62,43 40,28' fill='white'/%3E%3C/svg%3E">
+<style>
+  :root{
+    /* Identidad Kodea */
+    --magenta:#E5004E;
+    --azul:#133F6C;
+    --amarillo:#FFD831;
+    --turquesa:#00B4D2;
+    --gris:#898A8D;
+    --texto:#2A2A2A;
+    --cuerpo:#404040;
+    --bg:#F3F3F3;
+    --superficie:#FFFFFF;
+    --verde:#1BA672;
+    --rojo:#E5004E;
+    --sombra:0 2px 10px rgba(19,63,108,.08);
+    --sombra-alta:0 6px 24px rgba(19,63,108,.16);
+    --radio:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:'Poppins',system-ui,Arial,sans-serif;
+    background:var(--bg);color:var(--cuerpo);
+    line-height:1.45;overscroll-behavior-y:none;
+    padding-bottom:82px; /* espacio para la barra inferior */
+  }
+  h1,h2,h3{color:var(--texto);font-weight:700;line-height:1.2}
+  button{font-family:inherit;cursor:pointer;border:none;background:none}
+  .oculto{display:none !important}
+
+  /* ===== ENCABEZADO ===== */
+  header{
+    background:var(--superficie);padding:14px 18px;
+    display:flex;align-items:center;gap:10px;
+    box-shadow:var(--sombra);position:sticky;top:0;z-index:30;
+  }
+  .logo{display:flex;align-items:center;gap:9px}
+  .logo svg{width:26px;height:26px}
+  .logo .txt{font-weight:800;font-size:17px;color:var(--texto);letter-spacing:-.3px}
+  .logo .txt b{color:var(--magenta)}
+  .neg-nombre{margin-left:auto;font-size:12.5px;color:var(--gris);font-weight:500;text-align:right;max-width:45%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* ===== CONTENEDOR DE VISTAS ===== */
+  main{padding:16px 16px 20px;max-width:520px;margin:0 auto}
+  .vista{animation:aparece .25s ease}
+  @keyframes aparece{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .titulo-vista{font-size:21px;margin-bottom:4px}
+  .titulo-vista .barra{display:inline-block;width:5px;height:20px;background:var(--magenta);border-radius:3px;margin-right:8px;vertical-align:-2px}
+  .sub-vista{color:var(--gris);font-size:13px;margin-bottom:16px}
+
+  /* ===== INICIO ===== */
+  .hero-mes{
+    background:linear-gradient(135deg,var(--azul),#0d2d4f);
+    color:#fff;border-radius:var(--radio);padding:22px 20px;
+    position:relative;overflow:hidden;box-shadow:var(--sombra-alta);margin-bottom:16px;
+  }
+  .hero-mes .circulo{position:absolute;border-radius:50%;background:var(--magenta);opacity:.5}
+  .hero-mes .c1{width:90px;height:90px;top:-30px;right:-24px}
+  .hero-mes .c2{width:34px;height:34px;bottom:14px;right:64px;background:var(--amarillo);opacity:.8}
+  .hero-mes .etiqueta{font-size:12.5px;opacity:.85;font-weight:500;position:relative}
+  .hero-mes .frase{font-size:19px;font-weight:700;margin:6px 0 2px;position:relative;line-height:1.25}
+  .hero-mes .frase .monto{font-size:27px;display:block;margin-top:2px}
+  .hero-mes.pos .monto{color:var(--amarillo)}
+  .hero-mes.neg .monto{color:#ffd0dd}
+
+  .fila-numeros{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px}
+  .kpi{background:var(--superficie);border-radius:14px;padding:13px 10px;text-align:center;box-shadow:var(--sombra)}
+  .kpi .lbl{font-size:11px;color:var(--gris);font-weight:500;display:block;margin-bottom:3px}
+  .kpi .val{font-size:15.5px;font-weight:700;color:var(--texto)}
+  .kpi.entro .val{color:var(--verde)}
+  .kpi.salio .val{color:var(--magenta)}
+
+  .linea-extra{background:var(--superficie);border-radius:12px;padding:12px 15px;box-shadow:var(--sombra);font-size:13.5px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .linea-extra span:last-child{font-weight:700;color:var(--texto)}
+  .linea-extra .ico{color:var(--gris)}
+
+  .btn-anotar{
+    display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+    background:var(--magenta);color:#fff;font-size:18px;font-weight:700;
+    padding:16px;border-radius:16px;box-shadow:0 6px 18px rgba(229,0,78,.35);margin-top:6px;
+    transition:transform .08s;
+  }
+  .btn-anotar:active{transform:scale(.98)}
+  .btn-anotar .mas{font-size:24px;line-height:1;margin-top:-2px}
+
+  .aviso-privacidad{margin-top:18px;font-size:11.5px;color:var(--gris);text-align:center;line-height:1.5;padding:0 6px}
+
+  /* ===== ESTADO VACÍO ===== */
+  .vacio{text-align:center;padding:34px 20px;color:var(--gris)}
+  .vacio .emoji{font-size:44px;display:block;margin-bottom:12px}
+  .vacio h3{color:var(--texto);font-size:17px;margin-bottom:6px}
+  .vacio p{font-size:13.5px;max-width:280px;margin:0 auto}
+
+  /* ===== HISTORIAL ===== */
+  .selector-mes{display:flex;align-items:center;justify-content:space-between;background:var(--superficie);border-radius:12px;padding:8px 6px;box-shadow:var(--sombra);margin-bottom:14px}
+  .selector-mes button{width:38px;height:38px;border-radius:10px;font-size:20px;color:var(--azul);font-weight:700}
+  .selector-mes button:active{background:var(--bg)}
+  .selector-mes .mes-actual{font-weight:600;color:var(--texto);font-size:15px;text-transform:capitalize}
+  .mov{display:flex;align-items:center;gap:12px;background:var(--superficie);border-radius:13px;padding:12px 14px;box-shadow:var(--sombra);margin-bottom:9px}
+  .mov .ico-mov{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+  .mov.entro .ico-mov{background:rgba(27,166,114,.13)}
+  .mov.salio .ico-mov{background:rgba(229,0,78,.10)}
+  .mov.retiro .ico-mov{background:rgba(255,216,49,.22)}
+  .mov .info{flex:1;min-width:0}
+  .mov .info .cat{font-weight:600;color:var(--texto);font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mov .info .fec{font-size:11.5px;color:var(--gris)}
+  .mov .monto-mov{font-weight:700;font-size:15px;white-space:nowrap}
+  .mov.entro .monto-mov{color:var(--verde)}
+  .mov.salio .monto-mov{color:var(--magenta)}
+  .mov.retiro .monto-mov{color:#b8860b}
+  .mov .accion{width:30px;height:30px;border-radius:8px;color:var(--gris);font-size:16px;flex-shrink:0}
+  .mov .accion:active{background:var(--bg)}
+
+  /* ===== APRENDE ===== */
+  .tabs-aprende{display:flex;gap:8px;margin-bottom:16px}
+  .tabs-aprende button{flex:1;padding:10px;border-radius:11px;font-weight:600;font-size:13.5px;background:var(--superficie);color:var(--gris);box-shadow:var(--sombra)}
+  .tabs-aprende button.on{background:var(--azul);color:#fff}
+  .tarjeta-edu{background:var(--superficie);border-radius:14px;padding:16px 16px 15px;box-shadow:var(--sombra);margin-bottom:12px;border-left:4px solid var(--magenta)}
+  .tarjeta-edu h3{font-size:15.5px;margin-bottom:7px;display:flex;align-items:center;gap:7px}
+  .tarjeta-edu p{font-size:13.5px;color:var(--cuerpo);margin-bottom:7px}
+  .tarjeta-edu .destacado{background:rgba(0,180,210,.10);border-radius:9px;padding:9px 11px;font-size:13px;color:var(--azul);font-weight:500;margin-top:4px}
+  .tarjeta-edu ul{margin:4px 0 4px 18px;font-size:13.5px}
+  .tarjeta-edu li{margin-bottom:4px}
+
+  /* ===== CALCULADORA ===== */
+  .calc-card{background:var(--superficie);border-radius:16px;padding:18px 16px;box-shadow:var(--sombra);margin-bottom:14px}
+  .calc-resultado{background:linear-gradient(135deg,var(--magenta),#b80040);color:#fff;border-radius:16px;padding:20px;text-align:center;margin-bottom:14px;box-shadow:var(--sombra-alta)}
+  .calc-resultado .lbl{font-size:13px;opacity:.9;font-weight:500}
+  .calc-resultado .precio{font-size:34px;font-weight:800;margin:4px 0 2px}
+  .calc-resultado .nota{font-size:12px;opacity:.9}
+
+  /* ===== AJUSTES ===== */
+  .bloque{background:var(--superficie);border-radius:14px;padding:16px;box-shadow:var(--sombra);margin-bottom:14px}
+  .bloque h3{font-size:15px;margin-bottom:4px}
+  .bloque .desc{font-size:12.5px;color:var(--gris);margin-bottom:12px}
+  .fijo-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #eee}
+  .fijo-item:last-of-type{border-bottom:none}
+  .fijo-item .fnombre{flex:1;font-size:14px;color:var(--texto);font-weight:500}
+  .fijo-item .fmonto{font-weight:700;color:var(--texto);font-size:14px}
+  .fijo-item .fdel{color:var(--gris);font-size:18px;width:28px;text-align:center}
+
+  /* ===== INPUTS Y BOTONES ===== */
+  label.campo{display:block;font-size:13px;font-weight:600;color:var(--texto);margin:12px 0 5px}
+  input[type=text],input[type=number],select{
+    width:100%;padding:13px 14px;border:1.5px solid #e2e2e6;border-radius:12px;
+    font-family:inherit;font-size:16px;color:var(--texto);background:#fafafa;
+  }
+  input:focus,select:focus{outline:none;border-color:var(--magenta);background:#fff}
+  .btn{display:block;width:100%;padding:14px;border-radius:13px;font-weight:700;font-size:16px;text-align:center;transition:transform .08s}
+  .btn:active{transform:scale(.98)}
+  .btn-primario{background:var(--magenta);color:#fff}
+  .btn-azul{background:var(--azul);color:#fff}
+  .btn-suave{background:var(--bg);color:var(--azul);border:1.5px solid #dcdce2}
+  .btn-mini{padding:10px;font-size:14px;border-radius:11px}
+  .fila-btns{display:flex;gap:10px}
+  .fila-btns .btn{flex:1}
+
+  /* ===== BARRA INFERIOR ===== */
+  nav.tabbar{
+    position:fixed;bottom:0;left:0;right:0;background:var(--superficie);
+    display:flex;justify-content:space-around;padding:8px 4px 10px;
+    box-shadow:0 -2px 14px rgba(19,63,108,.10);z-index:40;
+  }
+  nav.tabbar button{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--gris);font-size:10.5px;font-weight:500;flex:1;padding:2px}
+  nav.tabbar button .i{font-size:21px;line-height:1}
+  nav.tabbar button.on{color:var(--magenta)}
+
+  /* ===== MODAL / HOJA INFERIOR ===== */
+  .overlay{position:fixed;inset:0;background:rgba(19,63,108,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center;animation:aparece .2s}
+  .hoja{background:var(--superficie);width:100%;max-width:520px;border-radius:22px 22px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));max-height:92vh;overflow-y:auto;animation:sube .28s cubic-bezier(.2,.8,.2,1)}
+  @keyframes sube{from{transform:translateY(100%)}to{transform:none}}
+  .hoja .agarre{width:40px;height:4px;background:#d8d8de;border-radius:3px;margin:0 auto 14px}
+  .hoja h2{font-size:19px;margin-bottom:4px}
+  .cerrar-x{position:absolute;top:14px;right:16px;font-size:24px;color:var(--gris);width:34px;height:34px}
+
+  /* Selector Entró / Salió / Retiro */
+  .flujo-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 4px}
+  .flujo-opts.tres{grid-template-columns:1fr 1fr 1fr}
+  .flujo-btn{padding:16px 8px;border-radius:14px;border:2px solid #e6e6ea;text-align:center;font-weight:600;font-size:14px;color:var(--texto);background:#fafafa;transition:.12s}
+  .flujo-btn .fe{font-size:26px;display:block;margin-bottom:4px}
+  .flujo-btn.sel-entro{border-color:var(--verde);background:rgba(27,166,114,.08);color:var(--verde)}
+  .flujo-btn.sel-salio{border-color:var(--magenta);background:rgba(229,0,78,.07);color:var(--magenta)}
+  .flujo-btn.sel-retiro{border-color:var(--amarillo);background:rgba(255,216,49,.14);color:#a6790a}
+
+  /* Monto grande */
+  .monto-wrap{position:relative;margin:16px 0 6px}
+  .monto-wrap .signo{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:26px;font-weight:700;color:var(--gris)}
+  .monto-input{width:100%;padding:16px 16px 16px 48px;font-size:30px;font-weight:700;text-align:left;border:2px solid #e6e6ea;border-radius:14px;color:var(--texto);background:#fafafa}
+  .monto-input:focus{outline:none;border-color:var(--magenta);background:#fff}
+
+  /* Chips de categoría */
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
+  .chip{padding:9px 13px;border-radius:20px;background:var(--bg);border:1.5px solid #e2e2e6;font-size:13px;font-weight:500;color:var(--cuerpo)}
+  .chip.on{background:var(--azul);color:#fff;border-color:var(--azul)}
+
+  /* Toast */
+  .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--texto);color:#fff;padding:12px 20px;border-radius:30px;font-size:14px;font-weight:600;z-index:80;opacity:0;transition:.3s;pointer-events:none;box-shadow:var(--sombra-alta)}
+  .toast.ver{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* Onboarding */
+  .bienvenida{text-align:center;padding:10px 4px}
+  .bienvenida .logo-gr{margin:6px auto 14px}
+  .bienvenida .logo-gr svg{width:56px;height:56px}
+  .bienvenida h2{font-size:22px;margin-bottom:10px}
+  .bienvenida p{font-size:14px;color:var(--cuerpo);margin-bottom:14px;line-height:1.5}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 90 86" aria-hidden="true">
+      <rect x="0" y="0" width="18" height="84" fill="var(--magenta)"/>
+      <polygon points="26,0 87,42 26,84 26,54.4 71,42 26,29.6" fill="var(--azul)"/>
+    </svg>
+    <span class="txt">Emprendedoras <b>Conectadas</b></span>
+  </div>
+  <span class="neg-nombre" id="negNombre"></span>
+</header>
+
+<main id="app"><!-- vistas se inyectan aquí --></main>
+
+<nav class="tabbar">
+  <button data-tab="inicio" class="on" onclick="irA('inicio')"><span class="i">🏠</span>Inicio</button>
+  <button data-tab="historial" onclick="irA('historial')"><span class="i">📋</span>Historial</button>
+  <button data-tab="aprende" onclick="irA('aprende')"><span class="i">🎓</span>Aprende</button>
+  <button data-tab="ajustes" onclick="irA('ajustes')"><span class="i">⚙️</span>Ajustes</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   EMPRENDEDORAS CONECTADAS · Fundación Kodea
+   App simple de orden financiero. Todo se guarda en el propio
+   celular (localStorage). Sin servidor, sin login, sin internet.
+   ============================================================ */
+
+const CLAVE = 'ec_kodea_v1';
+
+// ---- Estructura de datos por defecto ----
+function datosVacios(){
+  return {
+    negocio:{ nombre:'' },
+    movimientos:[], // {id, fecha:'YYYY-MM-DD', flujo:'entro'|'salio'|'retiro', categoria, monto}
+    costosFijos:[], // {id, nombre, monto}  -> se descuentan cada mes automáticamente
+    productos:[],   // {id, nombre, costo, margen, precio}
+    ajustes:{ ultimoBackup:null }
+  };
+}
+
+// ---- Cargar / guardar (con manejo de errores) ----
+let D = cargar();
+function cargar(){
+  try{
+    const raw = localStorage.getItem(CLAVE);
+    if(!raw) return datosVacios();
+    const obj = JSON.parse(raw);
+    // Migración defensiva: asegurar que existan todas las llaves
+    const base = datosVacios();
+    return Object.assign(base, obj, {
+      negocio: Object.assign(base.negocio, obj.negocio||{}),
+      ajustes: Object.assign(base.ajustes, obj.ajustes||{}),
+      movimientos: obj.movimientos||[],
+      costosFijos: obj.costosFijos||[],
+      productos: obj.productos||[]
+    });
+  }catch(e){
+    console.error('Error al leer datos', e);
+    return datosVacios();
+  }
+}
+function guardar(){
+  try{
+    localStorage.setItem(CLAVE, JSON.stringify(D));
+  }catch(e){
+    alert('No se pudo guardar. Puede que el almacenamiento del navegador esté lleno.');
+    console.error(e);
+  }
+}
+
+// ---- Utilidades de formato (pesos chilenos, sin decimales) ----
+function fmt(n){
+  const num = Math.round(Number(n)||0);
+  return '$' + num.toLocaleString('es-CL');
+}
+function idNuevo(){
+  // id único sin depender de Date.now aislado (suma aleatoria estable por sesión)
+  return 'm' + Date.now().toString(36) + Math.floor(Math.random()*1e6).toString(36);
+}
+function hoyISO(){
+  const d = new Date();
+  const off = d.getTimezoneOffset();
+  const local = new Date(d.getTime() - off*60000);
+  return local.toISOString().slice(0,10);
+}
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function nombreMes(iso){ // iso 'YYYY-MM'
+  const [a,m] = iso.split('-');
+  return MESES[parseInt(m,10)-1] + ' ' + a;
+}
+function mesDe(fechaISO){ return fechaISO.slice(0,7); } // 'YYYY-MM'
+
+// ---- Estado de navegación ----
+let TAB = 'inicio';
+let mesVisto = hoyISO().slice(0,7); // mes seleccionado en historial
+let tabAprende = 'conceptos';
+
+function irA(tab){
+  TAB = tab;
+  document.querySelectorAll('nav.tabbar button').forEach(b=>{
+    b.classList.remove('on');
+    if(b.dataset.tab===tab) b.classList.add('on');
+  });
+  render();
+  window.scrollTo(0,0);
+}
+
+// ---- Cálculos del mes ----
+function resumenMes(mes){
+  let ventas=0, gastos=0, retiros=0;
+  D.movimientos.forEach(m=>{
+    if(mesDe(m.fecha)!==mes) return;
+    if(m.flujo==='entro') ventas += Number(m.monto)||0;
+    else if(m.flujo==='salio') gastos += Number(m.monto)||0;
+    else if(m.flujo==='retiro') retiros += Number(m.monto)||0;
+  });
+  const fijos = D.costosFijos.reduce((s,f)=> s + (Number(f.monto)||0), 0);
+  const queda = ventas - gastos - fijos; // ganancia del negocio (sin contar retiros)
+  return {ventas, gastos, fijos, retiros, queda};
+}
+
+// ============================================================
+//  RENDER PRINCIPAL
+// ============================================================
+function render(){
+  document.getElementById('negNombre').textContent = D.negocio.nombre || '';
+  const app = document.getElementById('app');
+  if(TAB==='inicio')     app.innerHTML = vistaInicio();
+  else if(TAB==='historial') app.innerHTML = vistaHistorial();
+  else if(TAB==='aprende')   app.innerHTML = vistaAprende();
+  else if(TAB==='ajustes')   app.innerHTML = vistaAjustes();
+}
+
+// ------------------- INICIO -------------------
+function vistaInicio(){
+  const mes = hoyISO().slice(0,7);
+  const r = resumenMes(mes);
+  const hayDatos = D.movimientos.length>0;
+
+  // Frase humana según resultado
+  let clase, frase, montoTxt;
+  if(!hayDatos){
+    clase='pos';
+    frase='¡Bienvenida! Empieza anotando tu primera venta o gasto 👇';
+    montoTxt='';
+  } else if(r.queda >= 0){
+    clase='pos';
+    frase='Este mes vas ganando 🎉';
+    montoTxt='<span class="monto">'+fmt(r.queda)+'</span>';
+  } else {
+    clase='neg';
+    frase='Este mes gastaste más de lo que vendiste';
+    montoTxt='<span class="monto">'+fmt(Math.abs(r.queda))+' en contra</span>';
+  }
+
+  let html = `
+  <div class="hero-mes ${clase}">
+    <span class="circulo c1"></span><span class="circulo c2"></span>
+    <div class="etiqueta">📅 ${nombreMes(mes)}</div>
+    <div class="frase">${frase}${montoTxt}</div>
+  </div>
+
+  <div class="fila-numeros">
+    <div class="kpi entro"><span class="lbl">Entró</span><span class="val">${fmt(r.ventas)}</span></div>
+    <div class="kpi salio"><span class="lbl">Salió</span><span class="val">${fmt(r.gastos + r.fijos)}</span></div>
+    <div class="kpi"><span class="lbl">Te queda</span><span class="val" style="color:${r.queda>=0?'var(--verde)':'var(--magenta)'}">${fmt(r.queda)}</span></div>
+  </div>`;
+
+  if(r.fijos>0){
+    html += `<div class="linea-extra"><span class="ico">🏠 Costos fijos del mes</span><span>${fmt(r.fijos)}</span></div>`;
+  }
+  if(r.retiros>0){
+    html += `<div class="linea-extra"><span class="ico">👛 Te pagaste a ti misma</span><span>${fmt(r.retiros)}</span></div>`;
+  }
+
+  html += `<button class="btn-anotar" onclick="abrirAnotar()"><span class="mas">＋</span> Anotar movimiento</button>`;
+
+  html += `<p class="aviso-privacidad">🔒 Tus datos se guardan solo en este teléfono. Nadie más los ve. Acuérdate de hacer una copia de seguridad en Ajustes de vez en cuando.</p>`;
+
+  return html;
+}
+
+// ------------------- HISTORIAL -------------------
+function vistaHistorial(){
+  const movsMes = D.movimientos
+    .filter(m=> mesDe(m.fecha)===mesVisto)
+    .sort((a,b)=> b.fecha.localeCompare(a.fecha) || b.id.localeCompare(a.id));
+
+  let html = `
+  <h1 class="titulo-vista"><span class="barra"></span>Historial</h1>
+  <p class="sub-vista">Todos tus movimientos, mes a mes.</p>
+  <div class="selector-mes">
+    <button onclick="cambiarMes(-1)">‹</button>
+    <span class="mes-actual">${nombreMes(mesVisto)}</span>
+    <button onclick="cambiarMes(1)">›</button>
+  </div>`;
+
+  if(movsMes.length===0){
+    html += `<div class="vacio"><span class="emoji">🧾</span><h3>Sin movimientos este mes</h3><p>Cuando anotes ventas o gastos en ${nombreMes(mesVisto)}, aparecerán aquí.</p></div>`;
+    return html;
+  }
+
+  const icono = {entro:'💚', salio:'🛒', retiro:'👛'};
+  const signo = {entro:'+', salio:'−', retiro:'−'};
+  movsMes.forEach(m=>{
+    const fechaTxt = fechaLegible(m.fecha);
+    html += `
+    <div class="mov ${m.flujo}">
+      <div class="ico-mov">${icono[m.flujo]||'💰'}</div>
+      <div class="info">
+        <div class="cat">${escapar(m.categoria || (m.flujo==='entro'?'Venta':m.flujo==='retiro'?'Retiro':'Gasto'))}</div>
+        <div class="fec">${fechaTxt}</div>
+      </div>
+      <div class="monto-mov">${signo[m.flujo]}${fmt(m.monto)}</div>
+      <button class="accion" onclick="borrarMov('${m.id}')" aria-label="Borrar">🗑️</button>
+    </div>`;
+  });
+  return html;
+}
+function fechaLegible(iso){
+  const [a,mm,dd] = iso.split('-');
+  return `${parseInt(dd,10)} de ${MESES[parseInt(mm,10)-1]}`;
+}
+function cambiarMes(dir){
+  let [a,m] = mesVisto.split('-').map(Number);
+  m += dir;
+  if(m<1){m=12;a--;} if(m>12){m=1;a++;}
+  mesVisto = a + '-' + String(m).padStart(2,'0');
+  render();
+}
+function borrarMov(id){
+  const m = D.movimientos.find(x=>x.id===id);
+  if(!m) return;
+  if(confirm('¿Borrar este movimiento de '+fmt(m.monto)+'?')){
+    D.movimientos = D.movimientos.filter(x=>x.id!==id);
+    guardar();
+    render();
+    toast('Movimiento borrado');
+  }
+}
+
+// ------------------- APRENDE -------------------
+function vistaAprende(){
+  let html = `
+  <h1 class="titulo-vista"><span class="barra"></span>Aprende</h1>
+  <p class="sub-vista">Ideas simples para ordenar y hacer crecer tu negocio.</p>
+  <div class="tabs-aprende">
+    <button class="${tabAprende==='conceptos'?'on':''}" onclick="setTabAprende('conceptos')">📖 Conceptos</button>
+    <button class="${tabAprende==='calc'?'on':''}" onclick="setTabAprende('calc')">🧮 Calcular precio</button>
+  </div>`;
+
+  if(tabAprende==='conceptos') html += bloqueConceptos();
+  else html += bloqueCalculadora();
+  return html;
+}
+function setTabAprende(t){ tabAprende=t; render(); }
+
+function bloqueConceptos(){
+  return `
+  <div class="tarjeta-edu">
+    <h3>💵 ¿A cuánto vender tu producto?</h3>
+    <p>El precio nunca es "lo que cobra la vecina". Parte de lo que a ti te cuesta hacer <b>una</b> unidad: ingredientes, materiales, el envase, la bolsa. A eso súmale la ganancia que quieres.</p>
+    <div class="destacado">Precio = lo que te cuesta hacer 1 + tu ganancia. Usa la pestaña "Calcular precio" y te da el número.</div>
+  </div>
+  <div class="tarjeta-edu">
+    <h3>🏠 Costo fijo vs. 🛒 costo variable</h3>
+    <p>El <b>costo fijo</b> lo pagas igual, vendas mucho o poco: arriendo, internet, el plan del celular. El <b>costo variable</b> sube cuando vendes más: la harina, los materiales, las bolsas.</p>
+    <div class="destacado">Truco: los fijos configúralos una vez en Ajustes y la app los descuenta sola cada mes.</div>
+  </div>
+  <div class="tarjeta-edu">
+    <h3>⚖️ Punto de equilibrio</h3>
+    <p>Es cuánto necesitas vender en el mes para no perder ni ganar: el mínimo para "empatar". Si tus costos fijos del mes son $120.000 y de cada producto te quedan $2.000 limpios, necesitas vender 60 para cubrir los fijos.</p>
+    <ul><li>Ganancia por producto = precio − costo de hacerlo</li><li>Punto de equilibrio = costos fijos ÷ ganancia por producto</li></ul>
+  </div>
+  <div class="tarjeta-edu">
+    <h3>👛 Separa la plata del negocio de la tuya</h3>
+    <p>El error más común: sacar del cajón del negocio para el pan y las cuentas de la casa, sin darte cuenta. Cuando necesites plata para ti, anótalo como <b>"Me pagué a mí misma"</b>. Así sabes cuánto rinde de verdad tu negocio.</p>
+    <div class="destacado">Un negocio sano te paga un sueldo Y además le sobra para crecer.</div>
+  </div>
+  <div class="tarjeta-edu">
+    <h3>📅 Anota todos los días</h3>
+    <p>La app solo sirve si le cuentas lo que pasa. Toma 5 segundos: vendiste algo, anótalo; compraste insumos, anótalo. Al fin de mes vas a ver clarito si tu esfuerzo se está transformando en plata.</p>
+  </div>
+  <div class="tarjeta-edu">
+    <h3>💡 Reglas de oro</h3>
+    <ul>
+      <li>Nunca vendas bajo tu costo "para no perder al cliente": pierdes en cada venta.</li>
+      <li>Guarda un poquito de cada venta para imprevistos.</li>
+      <li>Sube precios de a poco antes que regalar tu trabajo.</li>
+      <li>Tu tiempo también vale: inclúyelo en el costo.</li>
+    </ul>
+  </div>`;
+}
+
+// ------------------- CALCULADORA -------------------
+function bloqueCalculadora(){
+  let html = `
+  <div class="calc-card">
+    <label class="campo">¿Cuánto te cuesta hacer 1 unidad? (materiales, envase…)</label>
+    <input type="number" inputmode="numeric" id="cCosto" placeholder="Ej: 1500" oninput="calcularPrecio()">
+    <label class="campo">¿Cuánto quieres ganar por cada una? (%)</label>
+    <input type="number" inputmode="numeric" id="cMargen" placeholder="Ej: 40" value="40" oninput="calcularPrecio()">
+    <div id="calcOut"></div>
+  </div>`;
+
+  // Productos guardados
+  if(D.productos.length>0){
+    html += `<h3 style="font-size:15px;margin:18px 0 10px;color:var(--texto)">Tus productos guardados</h3>`;
+    D.productos.forEach(p=>{
+      html += `<div class="linea-extra"><span>${escapar(p.nombre)} · cuesta ${fmt(p.costo)}</span><span>${fmt(p.precio)}</span></div>`;
+    });
+  }
+  return html;
+}
+function calcularPrecio(){
+  const costo = Number(document.getElementById('cCosto').value)||0;
+  const margen = Number(document.getElementById('cMargen').value)||0;
+  const out = document.getElementById('calcOut');
+  if(costo<=0){ out.innerHTML=''; return; }
+  const precio = costo * (1 + margen/100);
+  const ganancia = precio - costo;
+  out.innerHTML = `
+    <div class="calc-resultado" style="margin-top:16px">
+      <div class="lbl">Precio sugerido de venta</div>
+      <div class="precio">${fmt(precio)}</div>
+      <div class="nota">Ganas ${fmt(ganancia)} limpios por cada una</div>
+    </div>
+    <label class="campo">¿Guardar este producto? (opcional)</label>
+    <input type="text" id="cNombre" placeholder="Nombre del producto">
+    <button class="btn btn-azul btn-mini" style="margin-top:10px" onclick="guardarProducto(${costo},${margen},${precio})">Guardar producto</button>`;
+}
+function guardarProducto(costo,margen,precio){
+  const nombre = (document.getElementById('cNombre').value||'').trim();
+  if(!nombre){ toast('Escribe un nombre'); return; }
+  D.productos.push({id:idNuevo(), nombre, costo, margen, precio});
+  guardar();
+  render();
+  toast('Producto guardado ✅');
+}
+
+// ------------------- AJUSTES -------------------
+function vistaAjustes(){
+  let fijosHtml = '';
+  if(D.costosFijos.length===0){
+    fijosHtml = `<p style="font-size:13px;color:var(--gris);margin-bottom:10px">Aún no agregas costos fijos. Ej: arriendo, internet, plan del celular.</p>`;
+  } else {
+    D.costosFijos.forEach(f=>{
+      fijosHtml += `<div class="fijo-item"><span class="fnombre">${escapar(f.nombre)}</span><span class="fmonto">${fmt(f.monto)}</span><button class="fdel" onclick="borrarFijo('${f.id}')">✕</button></div>`;
+    });
+    const total = D.costosFijos.reduce((s,f)=>s+(Number(f.monto)||0),0);
+    fijosHtml += `<div class="fijo-item" style="margin-top:4px"><span class="fnombre" style="color:var(--gris)">Total mensual</span><span class="fmonto" style="color:var(--magenta)">${fmt(total)}</span><span style="width:28px"></span></div>`;
+  }
+
+  const ultimo = D.ajustes.ultimoBackup ? ('Última copia: '+D.ajustes.ultimoBackup) : 'Aún no has hecho ninguna copia.';
+
+  return `
+  <h1 class="titulo-vista"><span class="barra"></span>Ajustes</h1>
+  <p class="sub-vista">Configura tu negocio y cuida tus datos.</p>
+
+  <div class="bloque">
+    <h3>🏷️ Nombre de tu negocio</h3>
+    <p class="desc">Aparece arriba en la app.</p>
+    <input type="text" id="inNegocio" value="${escapar(D.negocio.nombre)}" placeholder="Ej: Tortas Jocelyn" maxlength="40">
+    <button class="btn btn-azul btn-mini" style="margin-top:10px" onclick="guardarNegocio()">Guardar nombre</button>
+  </div>
+
+  <div class="bloque">
+    <h3>🏠 Costos fijos mensuales</h3>
+    <p class="desc">Configúralos una vez y la app los descuenta solos cada mes.</p>
+    ${fijosHtml}
+    <label class="campo">Agregar un costo fijo</label>
+    <div class="fila-btns" style="align-items:stretch">
+      <input type="text" id="fNombre" placeholder="Ej: Arriendo" style="flex:1.3">
+      <input type="number" inputmode="numeric" id="fMonto" placeholder="Monto" style="flex:1">
+    </div>
+    <button class="btn btn-suave btn-mini" style="margin-top:10px" onclick="agregarFijo()">＋ Agregar costo fijo</button>
+  </div>
+
+  <div class="bloque">
+    <h3>💾 Copia de seguridad</h3>
+    <p class="desc">${ultimo}<br>Descarga un archivo con toda tu información. Guárdalo o mándatelo por WhatsApp. Si cambias de teléfono, lo vuelves a cargar aquí.</p>
+    <button class="btn btn-primario btn-mini" onclick="exportar()">⬇️ Guardar copia de seguridad</button>
+    <button class="btn btn-suave btn-mini" style="margin-top:10px" onclick="document.getElementById('fileImport').click()">⬆️ Cargar una copia guardada</button>
+    <input type="file" id="fileImport" accept="application/json,.json" class="oculto" onchange="importar(event)">
+  </div>
+
+  <div class="bloque">
+    <h3 style="color:var(--magenta)">🗑️ Borrar todo</h3>
+    <p class="desc">Elimina todos tus movimientos y ajustes de este teléfono. No se puede deshacer.</p>
+    <button class="btn btn-suave btn-mini" style="color:var(--magenta);border-color:#f3c2d1" onclick="borrarTodo()">Borrar todos mis datos</button>
+  </div>
+
+  <p class="aviso-privacidad">Emprendedoras Conectadas · Fundación Kodea · info@kodea.org</p>`;
+}
+
+function guardarNegocio(){
+  D.negocio.nombre = (document.getElementById('inNegocio').value||'').trim();
+  guardar(); render(); toast('Nombre guardado ✅');
+}
+function agregarFijo(){
+  const nombre = (document.getElementById('fNombre').value||'').trim();
+  const monto = Number(document.getElementById('fMonto').value)||0;
+  if(!nombre){ toast('Escribe el nombre'); return; }
+  if(monto<=0){ toast('Escribe un monto válido'); return; }
+  D.costosFijos.push({id:idNuevo(), nombre, monto});
+  guardar(); render(); toast('Costo fijo agregado ✅');
+}
+function borrarFijo(id){
+  D.costosFijos = D.costosFijos.filter(f=>f.id!==id);
+  guardar(); render();
+}
+function borrarTodo(){
+  if(confirm('¿Seguro que quieres borrar TODOS tus datos? Esto no se puede deshacer.')){
+    if(confirm('Última confirmación: se borrará todo tu historial. ¿Continuar?')){
+      D = datosVacios();
+      guardar(); irA('inicio'); toast('Todo borrado');
+    }
+  }
+}
+
+// ---- Exportar / Importar ----
+function exportar(){
+  D.ajustes.ultimoBackup = fechaLegible(hoyISO());
+  guardar();
+  const blob = new Blob([JSON.stringify(D,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const fecha = hoyISO();
+  a.href = url;
+  a.download = 'copia-emprendedoras-'+fecha+'.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  render();
+  toast('Copia descargada 💾');
+}
+function importar(ev){
+  const file = ev.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const obj = JSON.parse(e.target.result);
+      if(!obj || !Array.isArray(obj.movimientos)) throw new Error('formato');
+      if(confirm('Esto reemplazará los datos actuales de este teléfono con los de la copia. ¿Continuar?')){
+        D = Object.assign(datosVacios(), obj);
+        // asegurar arrays
+        D.movimientos = obj.movimientos||[];
+        D.costosFijos = obj.costosFijos||[];
+        D.productos = obj.productos||[];
+        guardar(); irA('inicio'); toast('Copia cargada ✅');
+      }
+    }catch(err){
+      alert('Ese archivo no es una copia válida de la app.');
+    }
+    ev.target.value='';
+  };
+  reader.readAsText(file);
+}
+
+// ============================================================
+//  HOJA "ANOTAR MOVIMIENTO"
+// ============================================================
+let anotarFlujo = 'entro';
+let anotarCat = '';
+
+const CATEGORIAS = {
+  entro: ['Venta','Encargo','Otro ingreso'],
+  salio: ['Insumos','Materiales','Envases/bolsas','Transporte','Publicidad','Otro gasto'],
+  retiro: ['Para mí']
+};
+
+function abrirAnotar(){
+  anotarFlujo='entro'; anotarCat='';
+  const ov = document.createElement('div');
+  ov.className='overlay'; ov.id='ovAnotar';
+  ov.addEventListener('click', e=>{ if(e.target===ov) cerrarAnotar(); });
+  ov.innerHTML = hojaAnotar();
+  document.body.appendChild(ov);
+  setTimeout(()=>{ const inp=document.getElementById('anotarMonto'); if(inp) inp.focus(); }, 300);
+}
+function cerrarAnotar(){
+  const ov = document.getElementById('ovAnotar');
+  if(ov) ov.remove();
+}
+function hojaAnotar(){
+  return `
+  <div class="hoja" style="position:relative">
+    <div class="agarre"></div>
+    <button class="cerrar-x" onclick="cerrarAnotar()">✕</button>
+    <h2>Anotar movimiento</h2>
+    <p style="font-size:13px;color:var(--gris)">¿Qué pasó?</p>
+    <div class="flujo-opts tres">
+      <button class="flujo-btn ${anotarFlujo==='entro'?'sel-entro':''}" onclick="setFlujo('entro')"><span class="fe">💚</span>Entró plata</button>
+      <button class="flujo-btn ${anotarFlujo==='salio'?'sel-salio':''}" onclick="setFlujo('salio')"><span class="fe">🛒</span>Salió plata</button>
+      <button class="flujo-btn ${anotarFlujo==='retiro'?'sel-retiro':''}" onclick="setFlujo('retiro')"><span class="fe">👛</span>Para mí</button>
+    </div>
+
+    <div class="monto-wrap">
+      <span class="signo">$</span>
+      <input class="monto-input" id="anotarMonto" type="number" inputmode="numeric" placeholder="0">
+    </div>
+
+    <div id="anotarCats">${chipsCategoria()}</div>
+
+    <label class="campo">Fecha</label>
+    <input type="date" id="anotarFecha" value="${hoyISO()}">
+
+    <button class="btn btn-primario" style="margin-top:18px" onclick="confirmarAnotar()">Guardar</button>
+  </div>`;
+}
+function chipsCategoria(){
+  const cats = CATEGORIAS[anotarFlujo]||[];
+  let h = `<label class="campo">¿De qué fue? (opcional)</label><div class="chips">`;
+  cats.forEach(c=>{
+    h += `<button class="chip ${anotarCat===c?'on':''}" onclick="setCat('${c}')">${c}</button>`;
+  });
+  h += `</div>`;
+  return h;
+}
+function setFlujo(f){
+  anotarFlujo=f; anotarCat='';
+  // Re-render solo botones de flujo y chips (sin perder el monto escrito)
+  document.querySelectorAll('#ovAnotar .flujo-btn').forEach(b=>{
+    b.classList.remove('sel-entro','sel-salio','sel-retiro');
+  });
+  const idx = {entro:0,salio:1,retiro:2}[f];
+  const btns = document.querySelectorAll('#ovAnotar .flujo-btn');
+  if(btns[idx]) btns[idx].classList.add('sel-'+f);
+  document.getElementById('anotarCats').innerHTML = chipsCategoria();
+}
+function setCat(c){
+  anotarCat = (anotarCat===c)?'':c;
+  document.getElementById('anotarCats').innerHTML = chipsCategoria();
+}
+function confirmarAnotar(){
+  const monto = Number(document.getElementById('anotarMonto').value)||0;
+  const fecha = document.getElementById('anotarFecha').value || hoyISO();
+  if(monto<=0){ toast('Escribe un monto mayor a 0'); return; }
+  D.movimientos.push({
+    id:idNuevo(),
+    fecha,
+    flujo:anotarFlujo,
+    categoria:anotarCat,
+    monto:monto
+  });
+  guardar();
+  cerrarAnotar();
+  // Si estamos viendo historial de otro mes, saltar al mes del movimiento
+  mesVisto = mesDe(fecha);
+  irA('inicio');
+  toast('¡Anotado! ✅');
+}
+
+// ---- Toast ----
+let toastTimer=null;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('ver');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove('ver'), 2200);
+}
+
+// ---- Seguridad: escapar texto del usuario ----
+function escapar(str){
+  return String(str||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ---- Arranque ----
+render();
+</script>
+</body>
+</html>
